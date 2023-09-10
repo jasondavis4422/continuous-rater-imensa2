@@ -2,39 +2,59 @@
     there is a single button that saves responses to firebase and submits HIT  -->
 
     <script>
-        import { db, params, serverTime } from '../utils.js';
+        import { db, params, serverTime, experiment, userGroup } from '../utils'
+        import { createEventDispatcher } from 'svelte';
+
     	let value = [0];
         let value1 = [0];
         let value2 = [0];
         let value3 = [0];
         let value4 = [0];
+
+        const ratingsPath = `${experiment}/ratings`;
+	    const ratingsDoc = db.doc(ratingsPath);
+	    const subjectGroupPath = `${experiment}/subjects/${userGroup}`;
+	    const subjectGroupCollection = db.collection(subjectGroupPath);
+	    const stimuliPath = `${experiment}/stimuli`;
+	    const stimuliDoc = db.doc(stimuliPath);
+
+        const dispatch = createEventDispatcher();
         
         // populating necessary variables
-        export let subPath;
+        
         export let email;
         export let labName;
         export let numOptions;
+        export let videoIndex;
+        
+        export let ratingType;
+	    export let movies;
+	    export let options;
+	    export let links;
+	    export let index; 
+
         let emailAddress = "mailto:" + email;
         let currID = params.assignmentId;
         let postURL = params.turkSubmitTo + '/mturk/externalSubmit';
+        let moviesRemaining = [];
 
-        let age = '';
-        let feedback = '';
-        let sex = '';
-        let ethnicity = '';
-        let race = [];
-        const raceOptions = [
-            'Asian / Asian-American',
-            'Black / African-American',
-            'Native-American / Alaskan-Native',
-            'Pacific-Islander / Native-Hawaiian',
-            'White / Caucasian',
-            'Other / Unknown'
-        ];
-        let nativeLang = '';
-        let birth = '';
-        let handed = '';
+        let currVid;
+	    let currVidSrc;
+	    let ratingDocPathway;
 
+        if (options > 0) {
+		// choose random movie and rating type
+		currVid = movies[index];
+
+		let vidPlusRating = `${currVid}-${ratingType}`;
+
+		ratingDocPathway = `${ratingsPath}/${params.workerId}/${vidPlusRating}`;
+
+		// grab URL for video sourcing
+		currVidSrc = links[index];
+	
+	}
+     
         function shuffle(array) {
             let currentIndex = array.length, randomIndex;
             // While there remain elements to shuffle.
@@ -56,31 +76,44 @@
         let Q3 = "After watching the video, how " + arr[2] + " do you feel on a scale from 1-100?";
         let Q4 = "After watching the video, how " + arr[3] + " do you feel on a scale from 1-100?";
         let Q5 = "After watching the video, how " + arr[4] + " do you feel on a scale from 1-100?";
-   
+  
         const submitHIT = async () => {
+            
             try {
-                rating_info = [value, value1, value2, value3, value4];
-                dimensions = [arr[0], arr[1], arr[2], arr[3], arr[4]]
-                await db.doc(subPath).update({
-                    age,
-                    sex,
-                    ethnicity,
-                    race,
-                    nativeLang,
-                    birth,
-                    handed,
-                    feedback,
-                    HIT_complete: serverTime,
+                let rating_info = [value, value1, value2, value3, value4];
+                let dimensions = [arr[0], arr[1], arr[2], arr[3], arr[4]];
+                await db.doc(pathway).update({
                     Ratings: rating_info,
-                    Dimensions: dimensions
-                    
-                });          
-        }
+                    Dimensions: dimensions,
+                });     
+            }
             catch (error) {
                 console.error(error);
             }
+            dispatch("finished"); 
         };
-
+        
+        const newPage = async () =>{
+            if (videoIndex != 12){
+                let rating_info = [value, value1, value2, value3, value4];
+                let dimensions = [arr[0], arr[1], arr[2], arr[3], arr[4]];
+                dispatch("finished");   
+                await db.doc(ratingDocPathway).update({
+                    Ratings: rating_info,
+                    Dimensions: dimensions,
+                });    
+            } 
+            else
+            {
+                let rating_info = [value, value1, value2, value3, value4];
+                let dimensions = [arr[0], arr[1], arr[2], arr[3], arr[4]];
+                await db.doc(ratingDocPathway).update({
+                    Ratings: rating_info,
+                    Dimensions: dimensions,
+                });   
+            }
+        }
+      
     </script>
    
     <style>
@@ -169,15 +202,7 @@
                     <!-- Left empty for spacing -->
                 </div> 
                 <br>
-                <button class="button is-success is-large" on:click={submitHIT}>Submit HIT</button>         
+                <button class="button is-success is-large" on:click={newPage}>NEXT PAGE</button>         
             </form>
         </div> 
     </div>
-        
-    
-    
-    
-    
-    
-    
-   
