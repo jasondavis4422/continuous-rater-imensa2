@@ -4,7 +4,6 @@
   import { createEventDispatcher } from "svelte";
   export let ratingType;
 
-
   // Add/remove items here to create more instructions pages
   const ratingInstruct =
     "In this task, you will watch a short video, provide ratings related to that video continuously as you watch, and answer a series of follow-up questions. <br><br> Specifically, you will rate how <strong>" +
