@@ -97,8 +97,8 @@
     // sets movieIndex to 0 and ratingIndex to random, pushes & sorts all movies
     let CDN = "https://d1mahgasyx98sm.cloudfront.net/";
     let fileType = ".mp4";
-    let movieIndex = 0;
-    let ratingIndex = Math.floor(Math.random() * ratingTypes.length);
+    let movieIndex = 8;
+ let ratingIndex = Math.floor(Math.random() * ratingTypes.length);
     stimuliDoc.get().then(function (stimuliTable) {
         for (var field in stimuliTable.data()) {
             moviesRemaining.push(field);
@@ -125,9 +125,9 @@
                 console.log("moviesRemaining: ", moviesRemaining);
                 console.log(movieLinks);
                 // if any movie-rating pairings left, load and start
-                if (o > 0) {
+                if (numOptions > 0) {
                     // choose random movie and rating type
-                    currVid = moviesRemaining[n];
+                    currVid = moviesRemaining[movieIndex];
                   
                     currRating = ratingTypes[ratingIndex];
                     
@@ -135,7 +135,7 @@
                     
                     ratingDocPathway = `${ratingsPath}/${params.workerId}/${vidPlusRating}`;
                     // grab URL for video sourcing
-                    currVidSrc = movieLinks[n];
+                    currVidSrc = movieLinks[movieIndex];
                     updateState("consent");
                 } else {
                     console.log("no options left!");
@@ -309,18 +309,18 @@
             console.error(error);
         }
     };
-    let n = 0; 
-    let d = 0;
-    let o = 12;
+    
+    let debriefIndex= 8;
+    
     const increment = async () => {
-        n++;
-        o--;
-        console.log(n);
+        movieIndex++;
+        numOptions--;
+        console.log(movieIndex);
     };
 
     const increment2 = async () => {
-        d++;
-        console.log(d);
+        debriefIndex++;
+        console.log(debriefIndex);
     }
     // function used to remove previously watched videos from array
     function removeItemOnce(arr, value) {
@@ -382,7 +382,7 @@
             {time}
             movies={moviesRemaining}
             links={movieLinks}
-            index={n}
+            index={movieIndex}
             options={numOptions}
             on:finished={() => increment()}
             on:finished={() => updateState("debrief2")}
@@ -394,13 +394,20 @@
             {numOptions}
             movies={moviesRemaining}
             links={movieLinks}
-            index={d}
-            videoIndex = {n}
+            index={debriefIndex}
+            videoIndex = {movieIndex}
             options={numOptions}
             ratingType={currRating}
             on:finished={() => increment2()}
+            on:botcheck={() => updateState("botcheck-task")}
+            on:complete={() => updateState("debrief")}
             on:finished={() => updateState("task")}
         />
+        {:else if currentState === "debrief"}
+        <Debrief subPath={subjectPath} {email} {labName} {numOptions}
+        on:complete={() => updateState("complete")}
+        >
+        </Debrief>
     {:else if currentState === "complete"}
         <Complete />
     {/if}

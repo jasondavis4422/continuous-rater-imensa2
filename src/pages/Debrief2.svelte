@@ -92,9 +92,19 @@
             }
             dispatch("finished"); 
         };
-        
+       let numVideos = 11;
+       let botCheck = 3;
         const newPage = async () =>{
-            if (videoIndex != 12){
+            if (videoIndex% botCheck == 0 && videoIndex != numVideos){
+                let rating_info = [value, value1, value2, value3, value4];
+                let dimensions = [arr[0], arr[1], arr[2], arr[3], arr[4]];
+                dispatch("botcheck");   
+                await db.doc(ratingDocPathway).update({
+                    Ratings: rating_info,
+                    Dimensions: dimensions,
+                });    
+            } 
+            else if (videoIndex != numVideos){
                 let rating_info = [value, value1, value2, value3, value4];
                 let dimensions = [arr[0], arr[1], arr[2], arr[3], arr[4]];
                 dispatch("finished");   
@@ -107,6 +117,7 @@
             {
                 let rating_info = [value, value1, value2, value3, value4];
                 let dimensions = [arr[0], arr[1], arr[2], arr[3], arr[4]];
+                dispatch("complete");   
                 await db.doc(ratingDocPathway).update({
                     Ratings: rating_info,
                     Dimensions: dimensions,
