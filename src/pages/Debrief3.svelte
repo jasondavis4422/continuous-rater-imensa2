@@ -117,26 +117,26 @@ console.log(ratingDocPathway)
 
 
                                         <label class="label"
-            ><u>       {Main_question[movieIndices[videoIndex]]}  </u>
+            ><u>       {Main_question[videoIndex-1]}  </u>
             <div class="options">
                 <label class="radio">
                     <input type="radio" bind:group={answer} value={"A"} />
-                    {Answer_a[movieIndices[videoIndex]]}
+                    {Answer_a[videoIndex-1]}
                 </label>
                 <label class="radio">
                     <input type="radio" bind:group={answer} value={"B"} />
-                    {Answer_b[movieIndices[videoIndex]]}                </label>
+                    {Answer_b[videoIndex-1]}                </label>
                 <label class="radio">
                     <input type="radio" bind:group={answer} value={"C"} />
-                    {Answer_c[movieIndices[videoIndex]]}  
+                    {Answer_c[videoIndex-1]}  
                 </label>
                 <label class="radio">
                     <input type="radio" bind:group={answer} value={"D"} />
-                    {Answer_d[movieIndices[videoIndex]]}  
+                    {Answer_d[videoIndex-1]}  
                 </label>
                 <label class="radio">
                     <input type="radio" bind:group={answer} value={"E"} />
-                    {Answer_e[movieIndices[videoIndex]]}  
+                    {Answer_e[videoIndex-1]}  
                 </label>
                 <br />
             </div>
