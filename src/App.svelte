@@ -111,7 +111,7 @@ import Prolific from "./pages/Prolific.svelte"
     };
 
     // sets movieIndex to 0 and ratingIndex to random, pushes & sorts all movies
-    let CDN = "https://d1mahgasyx98sm.cloudfront.net/";
+    let CDN = "https://d3rufis6fn0r6h.cloudfront.net";
     let fileType = ".mp4";
     let movieIndex = 0;
     let movieIndices = []
