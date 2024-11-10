@@ -114,6 +114,7 @@ import Prolific from "./pages/Prolific.svelte"
     let CDN = "https://d1mahgasyx98sm.cloudfront.net/";
     let fileType = ".mp4";
     let movieIndex = 0;
+    let movieIndices = []
  let ratingIndex = Math.floor(Math.random() * ratingTypes.length);
     stimuliDoc.get().then(function (stimuliTable) {
         for (var field in stimuliTable.data()) {
@@ -124,6 +125,20 @@ import Prolific from "./pages/Prolific.svelte"
         movieLinks.sort();
         shuffle(moviesRemaining);
         shuffle(movieLinks);
+
+        console.log("move links")
+        console.log(movieLinks)
+        
+        for (var field2 in movieLinks){
+            let str = movieLinks[field2]
+            str = str.replace(CDN, "");
+            str = str.replace(fileType, "")
+             var res = str.replace(/\D/g, "");
+             res = parseInt(res)
+             movieIndices.push(res)
+        }
+        console.log("movie indeces")
+        console.log(movieIndices)
 
         // check to see which movies subject has already viewed (if any)
         let currPath = `${ratingsPath}/${params.workerId}`;
@@ -438,6 +453,7 @@ import Prolific from "./pages/Prolific.svelte"
             {numOptions}
             movies={moviesRemaining}
             links={movieLinks}
+            movieIndices = {movieIndices}
             index={debriefIndex2}
             videoIndex = {movieIndex}
             options={numOptions}
