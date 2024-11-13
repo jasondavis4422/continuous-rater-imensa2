@@ -19,7 +19,10 @@
         
         export let email;
         export let videoIndex;
+
+            let currentState = "debrief3"
   
+        
         export let ratingType;
 	    export let movies;
 	    export let options;
@@ -37,7 +40,7 @@
 	    let currVidSrc;
 	    let ratingDocPathway;
         let botCheck = 2;
-       let answer = '';
+       let answer;
 
         if (options > 0) {
 		// choose random movie and rating type
@@ -61,23 +64,36 @@ let Answer_d = ['D) Meat chickens are selectively bred to grow at a rate three t
 let Answer_e =['E) Disbudding is performed on male calves to prevent horn growth.', 'E) Injured or ill animals are treated as acceptable losses not given immediate treatment.', 'E) Male calves are sometimes transported to slaughterhouses weekly by the thousands.', 'E) Calves are moved into a conveyor system during slaughter.', 'E) Mother pigs movement is restricted when pregnant or feeding.', 'E) Ten to twenty percent of piglets do not survive their first few weeks.', 'E) Toxicity testing involves animals enduring suffering and confinement.', 'E) Chemicals may be applied to animals eyes', 'E) Workers may become emotionally distant from animals over time.'];
 console.log(ratingDocPathway)
 
-
-
+     console.log(movieIndices)
      
-        const newPage = async () =>{   
+
+    function handleClick() {
+		currentState = "debrief3";
+	}
+        const newPage = async () =>{  
+            if (answer != null)
+            {
             if (videoIndex % botCheck == 0 && videoIndex != numVideos){
             
                 dispatch("botcheck")
                 await db.doc(ratingDocPathway).update({
                 Comphrehension: answer
                 });    
-            }   else
+            }   
+            else
 
                 dispatch("finished")
                 await db.doc(ratingDocPathway).update({
                    Comphrehension: answer
                 
                 });    
+            }
+
+            else
+            {
+                alert('Answer was not submitted.')
+                currentState = "try again";
+            }
         
         }
       
@@ -108,7 +124,8 @@ console.log(ratingDocPathway)
     
     <div class="container">
         <div class="form-box">
-            <form name="mturk" action={postURL} method='POST'>
+            {#if currentState === "debrief3"}
+            <form name="mturk"  method='POST'>
                 <h2> Please answer the following question, then press “NEXT PAGE” to continue to the next video.  </h2>
            
 
@@ -117,7 +134,7 @@ console.log(ratingDocPathway)
 
 
                                         <label class="label"
-            ><u>       {Main_question[videoIndex-1]}  </u>
+            ><u>       {Main_question[videoIndex -1]}  </u>
             <div class="options">
                 <label class="radio">
                     <input type="radio" bind:group={answer} value={"A"} />
@@ -151,5 +168,9 @@ console.log(ratingDocPathway)
                 <br>
                 <button class="button is-success is-large" on:click={newPage}>NEXT PAGE</button>         
             </form>
+            {:else if currentState === "try again"}
+            <p>Sorry, you did not submit your answer. Please try again.</p>
+            <button class="button" on:click={handleClick}>Try again</button>
+            {/if}
         </div> 
     </div>
