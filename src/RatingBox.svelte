@@ -39,7 +39,7 @@
             stepSize = ogStepSize;
         }
     };
-
+ // random change
     // moves rating value
     const handleKeyPress = (e) => {
         if (!paused) {
