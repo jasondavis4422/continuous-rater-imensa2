@@ -387,12 +387,17 @@ import Prolific from "./pages/Prolific.svelte"
         />
         {:else if currentState === "botcheck-instruct"}
         <Botcheck
+        index={movieIndex}
             on:finished={() => updateState("prolific")}
+            on:passed={() => updateState("instructions2")}
             on:failed={() => failedBot()}
         ></Botcheck>
     {:else if currentState === "botcheck-task"}
         <Botcheck
+        index={movieIndex}
+
             on:finished={() => updateState("prolific")}
+            on:passed={() => updateState("instructions2")}
             on:failed={() => failedBot()}
         ></Botcheck>
        
